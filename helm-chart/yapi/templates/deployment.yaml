@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "yapi.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "yapi.name" . }}
+    helm.sh/chart: {{ include "yapi.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.yapi.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "yapi.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "yapi.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "yapi.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.yapi.image.repository }}:{{ .Values.yapi.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.yapi.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.yapi.config.port }}
+              protocol: TCP
+          env:
+            - name: YAPI_PORT
+              value: "{{ .Values.yapi.config.port }}"
+            - name: YAPI_ADMIN_ACCOUNT
+              value: "{{ .Values.yapi.config.adminAccount }}"
+            - name: YAPI_TIMEOUT
+              value: "{{ .Values.yapi.config.timeout }}"
+            
+            # 数据库配置
+            {{- if .Values.mongodb.external.enabled }}
+            - name: YAPI_DB_SERVERNAME
+              value: "{{ .Values.mongodb.external.host }}"
+            - name: YAPI_DB_NAME
+              value: "{{ .Values.mongodb.external.database }}"
+            - name: YAPI_DB_PORT
+              value: "{{ .Values.mongodb.external.port }}"
+            - name: YAPI_DB_USER
+              value: "{{ .Values.mongodb.external.username }}"
+            - name: YAPI_DB_PASS
+              value: "{{ .Values.mongodb.external.password }}"
+            - name: YAPI_DB_AUTH_SOURCE
+              value: "{{ .Values.mongodb.external.authSource }}"
+            {{- else }}
+            - name: YAPI_DB_SERVERNAME
+              value: "{{ include "yapi.fullname" . }}-mongodb"
+            - name: YAPI_DB_NAME
+              value: "yapi"
+            - name: YAPI_DB_PORT
+              value: "27017"
+            - name: YAPI_DB_USER
+              value: "{{ .Values.mongodb.auth.rootUser }}"
+            - name: YAPI_DB_PASS
+              value: "{{ .Values.mongodb.auth.rootPassword }}"
+            - name: YAPI_DB_AUTH_SOURCE
+              value: "admin"
+            {{- end }}
+            
+            # 邮件配置
+            - name: YAPI_MAIL_ENABLE
+              value: "{{ .Values.yapi.config.mail.enable }}"
+            {{- if .Values.yapi.config.mail.enable }}
+            - name: YAPI_MAIL_HOST
+              value: "{{ .Values.yapi.config.mail.host }}"
+            - name: YAPI_MAIL_PORT
+              value: "{{ .Values.yapi.config.mail.port }}"
+            - name: YAPI_MAIL_FROM
+              value: "{{ .Values.yapi.config.mail.from }}"
+            - name: YAPI_MAIL_USER
+              value: "{{ .Values.yapi.config.mail.user }}"
+            - name: YAPI_MAIL_PASS
+              value: "{{ .Values.yapi.config.mail.pass }}"
+            {{- end }}
+            
+            # 插件配置
+            - name: YAPI_PLUGINS
+              value: {{ .Values.yapi.config.plugins | toJson | quote }}
+          
+          resources:
+            {{- toYaml .Values.yapi.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

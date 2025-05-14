@@ -1,0 +1,101 @@
+# Default values for YApi Helm chart
+#
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## YApi Server Configuration
+yapi:
+  replicaCount: 1
+  image:
+    repository: ""
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  
+  # YApi configuration
+  config:
+    port: 3000
+    adminAccount: "admin@admin.com"
+    timeout: 120000
+    
+    # Mail configuration
+    mail:
+      enable: false
+      host: "smtp.163.com"
+      port: 465
+      from: "your@email.com"
+      user: "your@email.com"
+      pass: "yourpassword"
+    
+    # Plugins configuration
+    plugins:
+      - name: "import-postman"
+      - name: "import-har"
+      - name: "advanced-mock"
+
+## MongoDB Configuration
+mongodb:
+  enabled: true
+  architecture: standalone
+  auth:
+    rootUser: "test1"
+    rootPassword: "test1"
+    username: "appuser"
+    password: "secretpwd"
+    database: "appdb"
+  
+  # If you want to use an external MongoDB
+  external:
+    enabled: false
+    host: ""
+    port: 27017
+    username: ""
+    password: ""
+    database: "yapi"
+    authSource: "admin"
+
+  image:
+    repository: bitnami/mongodb
+    tag: "8.0"
+  
+  persistence:
+    enabled: true
+    size: 8Gi
+    storageClass: ""
+  
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+## Common
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
