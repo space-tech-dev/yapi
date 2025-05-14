@@ -1,0 +1,32 @@
+services:
+  yapi-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+      
+
+  mongodb:
+    image: bitnami/mongodb:8.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/bitnami/mongodb
+    environment:
+      # 必须：设置管理员账号，用于开启认证
+      - MONGODB_ROOT_USER=test1
+      - MONGODB_ROOT_PASSWORD=test1
+
+      # 可选：创建一个普通用户及其默认数据库
+      - MONGODB_USERNAME=appuser
+      - MONGODB_PASSWORD=secretpwd
+      - MONGODB_DATABASE=appdb
+
+      # 可选：开启调试模式，容器日志会更详细
+      - BITNAMI_DEBUG=true
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+    driver: local
