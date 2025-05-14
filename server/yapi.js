@@ -1,7 +1,20 @@
 const path = require('path');
 const fs = require('fs-extra');
 const nodemailer = require('nodemailer');
-const config = require('../config.json');
+
+// 优先从环境变量读取配置，如果找不到则尝试从配置文件读取
+let config;
+try {
+  config = require('./utils/config-env.js');
+  console.log('成功从环境变量读取配置');
+} catch (e) {
+  try {
+    config = require('../config.json');
+    console.log('成功从config.json读取配置');
+  } catch (e) {
+    throw new Error('无法加载配置，请确保已配置环境变量或创建config.json文件');
+  }
+}
 
 let insts = new Map();
 let mail;

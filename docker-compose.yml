@@ -5,12 +5,36 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    environment:
+      # 基础配置
+      - YAPI_PORT=3000
+      - YAPI_ADMIN_ACCOUNT=admin@admin.com
+      - YAPI_TIMEOUT=120000
+      
+      # 数据库配置
+      - YAPI_DB_SERVERNAME=mongodb
+      - YAPI_DB_NAME=yapi
+      - YAPI_DB_PORT=27017
+      - YAPI_DB_USER=test1
+      - YAPI_DB_PASS=test1
+      - YAPI_DB_AUTH_SOURCE=admin
+      
+      # 邮件配置 - 请根据需要自行配置
+      - YAPI_MAIL_ENABLE=false
+      # - YAPI_MAIL_HOST=smtp.163.com
+      # - YAPI_MAIL_PORT=465
+      # - YAPI_MAIL_FROM=your@email.com
+      # - YAPI_MAIL_USER=your@email.com
+      # - YAPI_MAIL_PASS=yourpassword
+      
+      # 插件配置 - JSON格式的字符串
+      - YAPI_PLUGINS=[{"name":"import-postman"},{"name":"import-har"},{"name":"advanced-mock"}]
       
 
   mongodb:
     image: bitnami/mongodb:8.0
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
     volumes:
       - mongodb_data:/bitnami/mongodb
     environment:

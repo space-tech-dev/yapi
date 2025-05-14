@@ -34,7 +34,30 @@ function createScript(plugin, pathAlias) {
 }
 
 function initPlugins(configPlugin) {
-  configPlugin = require('../config.json').plugins;
+  let plugins = [];
+  // 尝试从环境变量读取插件配置
+  try {
+    const pluginsStr = process.env.YAPI_PLUGINS;
+    if (pluginsStr) {
+      plugins = JSON.parse(pluginsStr);
+      console.log('从环境变量加载插件配置');
+    }
+  } catch (e) {
+    console.error('解析YAPI_PLUGINS环境变量失败:', e.message);
+  }
+
+  // 如果环境变量中没有配置，则尝试从配置文件读取
+  if (!plugins || plugins.length === 0) {
+    try {
+      plugins = require('../config.json').plugins || [];
+      console.log('从config.json加载插件配置');
+    } catch (e) {
+      console.error('从config.json加载插件配置失败:', e.message);
+      plugins = [];
+    }
+  }
+  
+  configPlugin = plugins;
   var systemConfigPlugin = require('./common/config.js').exts;
 
   var scripts = [];

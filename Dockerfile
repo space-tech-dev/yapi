@@ -18,7 +18,33 @@ FROM node:22-alpine
 
 # 设置环境变量为 production，关闭调试
 ENV NODE_ENV=production
-ENV PORT=3000
+
+# 设置YAPI的环境变量
+ENV YAPI_PORT=3000
+ENV YAPI_ADMIN_ACCOUNT=admin@admin.com
+ENV YAPI_TIMEOUT=120000
+
+# 数据库配置
+ENV YAPI_DB_SERVERNAME=mongodb
+ENV YAPI_DB_NAME=yapi
+ENV YAPI_DB_PORT=27017
+ENV YAPI_DB_USER=test1
+ENV YAPI_DB_PASS=test1
+ENV YAPI_DB_AUTH_SOURCE=admin
+
+# 邮件配置 - 默认是禁用的，用户需要自行配置
+ENV YAPI_MAIL_ENABLE=false
+ENV YAPI_MAIL_HOST=smtp.163.com
+ENV YAPI_MAIL_PORT=465
+ENV YAPI_MAIL_FROM=
+ENV YAPI_MAIL_USER=
+ENV YAPI_MAIL_PASS=
+
+# 其他配置
+ENV YAPI_CLOSE_REGISTER=false
+
+# 插件配置 - JSON格式的字符串
+ENV YAPI_PLUGINS=[{"name":"import-postman"},{"name":"import-har"},{"name":"advanced-mock"},{"name":"import-swagger"},{"name":"statistics"},{"name":"export-data"},{"name":"gen-services"},{"name":"export-swagger2-data"},{"name":"import-yapi-json"},{"name":"wiki"},{"name":"swagger-auto-sync"}]
 
 WORKDIR /app
 
