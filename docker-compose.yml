@@ -17,9 +17,9 @@ services:
       - YAPI_DB_SERVERNAME=mongodb
       - YAPI_DB_NAME=yapi
       - YAPI_DB_PORT=27017
-      - YAPI_DB_USER=appuser
-      - YAPI_DB_PASS=secretpwd
-      - YAPI_DB_AUTH_SOURCE=yapi
+      - YAPI_DB_USER=test1
+      - YAPI_DB_PASS=test1
+      - YAPI_DB_AUTH_SOURCE=admin
 
       - YAPI_CLOSE_REGISTER=true
       
@@ -46,23 +46,16 @@ services:
       - mongodb
 
   mongodb:
-    image: bitnami/mongodb:8.0
+    image: mongo:8.0.9
     ports:
       - "127.0.0.1:27017:27017"
     volumes:
-      - mongodb_data:/bitnami/mongodb
+      - mongodb_data:/data/db
     environment:
-      # 必须：设置管理员账号，用于开启认证
-      - MONGODB_ROOT_USER=test1
-      - MONGODB_ROOT_PASSWORD=test1
-
-      # 可选：创建一个普通用户及其默认数据库
-      - MONGODB_USERNAME=appuser
-      - MONGODB_PASSWORD=secretpwd
-      - MONGODB_DATABASE=yapi
-
-      # 可选：开启调试模式，容器日志会更详细
-      - BITNAMI_DEBUG=true
+      - MONGO_INITDB_ROOT_USERNAME=test1
+      - MONGO_INITDB_ROOT_PASSWORD=test1
+      # 为 yapi 应用创建用户和数据库
+      - MONGO_INITDB_DATABASE=yapi
     restart: unless-stopped
 
 volumes:

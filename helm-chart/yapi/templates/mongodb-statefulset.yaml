@@ -31,29 +31,20 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           env:
             # 设置管理员账号
-            - name: MONGODB_ROOT_USER
+            - name: MONGO_INITDB_ROOT_USERNAME
               value: "{{ .Values.mongodb.auth.rootUser }}"
-            - name: MONGODB_ROOT_PASSWORD
+            - name: MONGO_INITDB_ROOT_PASSWORD
               value: "{{ .Values.mongodb.auth.rootPassword }}"
-            
-            # 创建普通用户及默认数据库
-            - name: MONGODB_USERNAME
-              value: "{{ .Values.mongodb.auth.username }}"
-            - name: MONGODB_PASSWORD
-              value: "{{ .Values.mongodb.auth.password }}"
-            - name: MONGODB_DATABASE
+            # 初始化数据库
+            - name: MONGO_INITDB_DATABASE
               value: "{{ .Values.mongodb.auth.database }}"
-            
-            # 开启调试模式
-            - name: BITNAMI_DEBUG
-              value: "true"
           ports:
             - name: mongodb
               containerPort: 27017
               protocol: TCP
           volumeMounts:
             - name: mongodb-data
-              mountPath: /bitnami/mongodb
+              mountPath: /data/db
           resources:
             {{- toYaml .Values.mongodb.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

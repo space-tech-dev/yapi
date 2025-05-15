@@ -82,9 +82,7 @@ mongodb:
   auth:
     rootUser: "test1"
     rootPassword: "test1"
-    username: "appuser"
-    password: "secretpwd"
-    database: "appdb"
+    database: "yapi"
   
   # If you want to use an external MongoDB
   external:
@@ -97,8 +95,8 @@ mongodb:
     authSource: "admin"
 
   image:
-    repository: bitnami/mongodb
-    tag: "8.0"
+    repository: mongo
+    tag: "8.0.9"
   
   persistence:
     enabled: true
