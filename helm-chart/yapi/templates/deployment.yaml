@@ -93,6 +93,26 @@ spec:
               value: "{{ .Values.yapi.config.mail.pass }}"
             {{- end }}
             
+            # 注册配置
+            - name: YAPI_CLOSE_REGISTER
+              value: "{{ .Values.yapi.config.closeRegister }}"
+            
+            # Keycloak配置
+            - name: YAPI_KEYCLOAK_ENABLE
+              value: "{{ .Values.yapi.config.keycloak.enable }}"
+            {{- if .Values.yapi.config.keycloak.enable }}
+            - name: YAPI_KEYCLOAK_REALM
+              value: "{{ .Values.yapi.config.keycloak.realm }}"
+            - name: YAPI_KEYCLOAK_CLIENT_ID
+              value: "{{ .Values.yapi.config.keycloak.clientId }}"
+            - name: YAPI_KEYCLOAK_CLIENT_SECRET
+              value: "{{ .Values.yapi.config.keycloak.clientSecret }}"
+            - name: YAPI_KEYCLOAK_REDIRECT_URI
+              value: "{{ .Values.yapi.config.keycloak.redirectUri }}"
+            - name: YAPI_KEYCLOAK_AUTH_SERVER_URL
+              value: "{{ .Values.yapi.config.keycloak.authServerUrl }}"
+            {{- end }}
+            
             # 插件配置
             - name: YAPI_PLUGINS
               value: {{ .Values.yapi.config.plugins | toJson | quote }}

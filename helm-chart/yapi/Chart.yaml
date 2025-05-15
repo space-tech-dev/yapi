@@ -2,5 +2,5 @@ apiVersion: v2
 name: yapi
 description: A Helm chart for YApi API management platform
 type: application
-version: 0.1.0
+version: 0.3.0
 appVersion: "1.0.0"

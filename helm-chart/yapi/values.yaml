@@ -36,11 +36,44 @@ yapi:
       user: "your@email.com"
       pass: "yourpassword"
     
+    # Keycloak configuration
+    keycloak:
+      enable: false
+      realm: "master"
+      clientId: "yapi"
+      clientSecret: ""
+      redirectUri: ""
+      authServerUrl: ""
+    
+    # Register configuration
+    closeRegister: true
+    
     # Plugins configuration
     plugins:
       - name: "import-postman"
       - name: "import-har"
       - name: "advanced-mock"
+
+## Ingress configuration
+ingress:
+  enabled: false
+  ingressClassName: ""
+  pathType: ImplementationSpecific
+  apiVersion: ""
+  controller: default
+  hostname: yapi.local
+  hostnameStrict: false
+  path: ""
+  servicePort: http
+  annotations: {}
+  labels: {}
+  tls: false
+  selfSigned: false
+  extraHosts: []
+  extraPaths: []
+  extraTls: []
+  secrets: []
+  extraRules: []
 
 ## MongoDB Configuration
 mongodb:

@@ -42,7 +42,37 @@ helm install my-yapi ./yapi
 | `yapi.config.mail.from` | 发件人地址 | `your@email.com` |
 | `yapi.config.mail.user` | 邮箱用户名 | `your@email.com` |
 | `yapi.config.mail.pass` | 邮箱密码 | `yourpassword` |
+| `yapi.config.closeRegister` | 是否关闭注册 | `true` |
+| `yapi.config.keycloak.enable` | 是否启用Keycloak认证 | `false` |
+| `yapi.config.keycloak.realm` | Keycloak领域 | `master` |
+| `yapi.config.keycloak.clientId` | Keycloak客户端ID | `yapi` |
+| `yapi.config.keycloak.clientSecret` | Keycloak客户端密钥 | `""` |
+| `yapi.config.keycloak.redirectUri` | Keycloak重定向URI | `""` |
+| `yapi.config.keycloak.authServerUrl` | Keycloak认证服务器URL | `""` |
 | `yapi.config.plugins` | 启用的插件列表 | `[{"name":"import-postman"},{"name":"import-har"},{"name":"advanced-mock"}]` |
+
+### Ingress配置
+
+| 参数 | 描述 | 默认值 |
+| ---- | ---- | ------ |
+| `ingress.enabled` | 是否启用Ingress | `false` |
+| `ingress.ingressClassName` | IngressClass名称(Kubernetes 1.18+) | `""` |
+| `ingress.pathType` | Ingress路径类型 | `ImplementationSpecific` |
+| `ingress.apiVersion` | 强制指定Ingress API版本(如不设置则自动检测) | `""` |
+| `ingress.controller` | Ingress控制器类型(目前支持default和gce) | `default` |
+| `ingress.hostname` | Ingress默认主机名 | `yapi.local` |
+| `ingress.hostnameStrict` | 禁用从请求头动态解析主机名 | `false` |
+| `ingress.path` | Ingress默认路径 | `""` |
+| `ingress.servicePort` | 后端服务端口 | `http` |
+| `ingress.annotations` | Ingress资源的附加注解(可用于配置cert-manager等) | `{}` |
+| `ingress.labels` | Ingress资源的附加标签 | `{}` |
+| `ingress.tls` | 是否为ingress.hostname启用TLS配置 | `false` |
+| `ingress.selfSigned` | 使用Helm生成的自签名证书创建TLS密钥 | `false` |
+| `ingress.extraHosts` | 额外的主机名数组 | `[]` |
+| `ingress.extraPaths` | 需要添加到主主机下的任何额外任意路径 | `[]` |
+| `ingress.extraTls` | 额外主机名的TLS配置 | `[]` |
+| `ingress.secrets` | 如果提供自己的证书，用于添加证书密钥 | `[]` |
+| `ingress.extraRules` | 需要加入的额外规则 | `[]` |
 
 ### MongoDB配置
 
@@ -106,6 +136,32 @@ mongodb:
     password: yapi-password
     database: yapi
     authSource: admin
+```
+
+### 配置Keycloak认证
+
+```yaml
+yapi:
+  config:
+    keycloak:
+      enable: true
+      realm: master
+      clientId: yapi
+      clientSecret: your-client-secret
+      redirectUri: https://your-yapi-domain.com/api/user/oauth2/keycloak/callback
+      authServerUrl: https://your-keycloak-server.com
+```
+
+### 配置Ingress访问
+
+```yaml
+ingress:
+  enabled: true
+  hostname: yapi.example.com
+  ingressClassName: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls: true
 ```
 
 ### 配置资源限制
