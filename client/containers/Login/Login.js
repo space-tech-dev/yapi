@@ -21,7 +21,8 @@ const changeHeight = {
   state => {
     return {
       loginData: state.user,
-      isLDAP: state.user.isLDAP
+      isLDAP: state.user.isLDAP,
+      isKeycloak: state.user.isKeycloak
     };
   },
   {
@@ -43,7 +44,8 @@ class Login extends Component {
     history: PropTypes.object,
     loginActions: PropTypes.func,
     loginLdapActions: PropTypes.func,
-    isLDAP: PropTypes.bool
+    isLDAP: PropTypes.bool,
+    isKeycloak: PropTypes.bool
   };
 
   handleSubmit = e => {
@@ -78,10 +80,14 @@ class Login extends Component {
     this.setState({ loginType: e.target.value });
   };
 
+  handleKeycloakLogin = () => {
+    window.location.href = '/api/user/oauth2/keycloak';
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
 
-    const { isLDAP } = this.props;
+    const { isLDAP, isKeycloak } = this.props;
 
     const emailRule =
       this.state.loginType === 'ldap'
@@ -139,10 +145,22 @@ class Login extends Component {
           </Button>
         </FormItem>
 
-        {/* <div className="qsso-breakline">
-          <span className="qsso-breakword">或</span>
-        </div>
-        <Button style={changeHeight} id="qsso-login" type="primary" className="login-form-button" size="large" ghost>QSSO登录</Button> */}
+        {isKeycloak && (
+          <>
+            <div className="qsso-breakline">
+              <span className="qsso-breakword">或</span>
+            </div>
+            <Button 
+              style={changeHeight} 
+              type="primary" 
+              className="login-form-button" 
+              onClick={this.handleKeycloakLogin}
+              ghost
+            >
+              Keycloak登录
+            </Button>
+          </>
+        )}
       </Form>
     );
   }

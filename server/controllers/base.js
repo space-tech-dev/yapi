@@ -29,7 +29,9 @@ class baseController {
       '/api/user/status',
       '/api/user/logout',
       '/api/user/avatar',
-      '/api/user/login_by_ldap'
+      '/api/user/login_by_ldap',
+      '/api/user/oauth2/keycloak',
+      '/api/user/oauth2/keycloak/callback'
     ];
     if (ignoreRouter.indexOf(ctx.path) > -1) {
       this.$auth = true;
@@ -199,6 +201,7 @@ class baseController {
 
     body.ladp = await this.checkLDAP();
     body.canRegister = await this.checkRegister();
+    body.keycloak = !!yapi.WEBCONFIG.keycloakConfig;
     ctx.body = body;
   }
 

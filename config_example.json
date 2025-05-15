@@ -19,5 +19,12 @@
       "user": "***@163.com",
       "pass": "*****"
     }
+  },
+  "keycloakConfig": {
+    "authServerUrl": "https://keycloak.example.com/auth",
+    "realm": "your-realm",
+    "clientId": "yapi-client",
+    "clientSecret": "your-client-secret",
+    "redirectUri": "http://your-yapi-host:3000/api/user/oauth2/keycloak/callback"
   }
 }

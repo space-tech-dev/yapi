@@ -160,6 +160,16 @@ let routerConfig = {
       method: 'all'
     },
     {
+      action: 'oauthKeycloak',
+      path: 'oauth2/keycloak',
+      method: 'get'
+    },
+    {
+      action: 'oauthKeycloakCallback',
+      path: 'oauth2/keycloak/callback',
+      method: 'get'
+    },
+    {
       action: 'upStudy',
       path: 'up_study',
       method: 'get'

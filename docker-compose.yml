@@ -1,3 +1,5 @@
+# 仅用于本地开发，生产环境请使用 k8s 部署，并且不要使用任何弱密码
+
 services:
   yapi-server:
     build:
@@ -15,9 +17,11 @@ services:
       - YAPI_DB_SERVERNAME=mongodb
       - YAPI_DB_NAME=yapi
       - YAPI_DB_PORT=27017
-      - YAPI_DB_USER=test1
-      - YAPI_DB_PASS=test1
-      - YAPI_DB_AUTH_SOURCE=admin
+      - YAPI_DB_USER=appuser
+      - YAPI_DB_PASS=secretpwd
+      - YAPI_DB_AUTH_SOURCE=yapi
+
+      - YAPI_CLOSE_REGISTER=true
       
       # 邮件配置 - 请根据需要自行配置
       - YAPI_MAIL_ENABLE=false
@@ -26,10 +30,20 @@ services:
       # - YAPI_MAIL_FROM=your@email.com
       # - YAPI_MAIL_USER=your@email.com
       # - YAPI_MAIL_PASS=yourpassword
+
+      # keycloak配置
+      - YAPI_KEYCLOAK_ENABLE=true
+      - YAPI_KEYCLOAK_REALM=master
+      - YAPI_KEYCLOAK_CLIENT_ID=yapi
+      - YAPI_KEYCLOAK_CLIENT_SECRET=2AVF4Q7PkSqRuT04NBRooMNkVWIksDaG
+      - YAPI_KEYCLOAK_REDIRECT_URI=http://100.96.69.119:3000/api/user/oauth2/keycloak/callback
+      - YAPI_KEYCLOAK_AUTH_SERVER_URL=https://keycloak.spacecycle.cn
       
       # 插件配置 - JSON格式的字符串
       - YAPI_PLUGINS=[{"name":"import-postman"},{"name":"import-har"},{"name":"advanced-mock"}]
       
+    depends_on:
+      - mongodb
 
   mongodb:
     image: bitnami/mongodb:8.0
@@ -45,7 +59,7 @@ services:
       # 可选：创建一个普通用户及其默认数据库
       - MONGODB_USERNAME=appuser
       - MONGODB_PASSWORD=secretpwd
-      - MONGODB_DATABASE=appdb
+      - MONGODB_DATABASE=yapi
 
       # 可选：开启调试模式，容器日志会更详细
       - BITNAMI_DEBUG=true

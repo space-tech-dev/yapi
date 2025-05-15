@@ -3,6 +3,7 @@ const yapi = require('../yapi.js');
 const baseController = require('./base.js');
 const common = require('../utils/commons.js');
 const ldap = require('../utils/ldap.js');
+const KeycloakService = require('../utils/keycloak.js');
 
 const interfaceModel = require('../models/interface.js');
 const groupModel = require('../models/group.js');
@@ -15,6 +16,9 @@ class userController extends baseController {
   constructor(ctx) {
     super(ctx);
     this.Model = yapi.getInst(userModel);
+    if (yapi.WEBCONFIG.keycloakConfig) {
+      this.keycloakService = new KeycloakService();
+    }
   }
   /**
    * 用户登录接口
@@ -724,6 +728,54 @@ class userController extends baseController {
       return (ctx.body = yapi.commons.resReturn(result));
     } catch (e) {
       return (ctx.body = yapi.commons.resReturn(result, 422, e.message));
+    }
+  }
+
+  /**
+   * OAuth2 Keycloak 登录入口
+   * @interface /user/oauth2/keycloak
+   * @method GET
+   * @category user
+   * @returns {Object}
+   */
+  async oauthKeycloak(ctx) {
+    if (!this.keycloakService) {
+      return (ctx.body = yapi.commons.resReturn(null, 400, 'Keycloak is not configured'));
+    }
+    
+    // Redirect to Keycloak login page
+    const authUrl = this.keycloakService.getAuthorizationUrl();
+    ctx.redirect(authUrl);
+  }
+
+  /**
+   * OAuth2 Keycloak 回调接口
+   * @interface /user/oauth2/keycloak/callback
+   * @method GET
+   * @category user
+   * @returns {Object}
+   */
+  async oauthKeycloakCallback(ctx) {
+    try {
+      if (!this.keycloakService) {
+        return (ctx.body = yapi.commons.resReturn(null, 400, 'Keycloak is not configured'));
+      }
+      
+      // Handle OAuth callback
+      const user = await this.keycloakService.handleCallback(ctx);
+      
+      // Create private group for new users if needed
+      await this.handlePrivateGroup(user._id, user.username, user.email);
+      
+      // Set login cookies
+      this.setLoginCookie(user._id, user.passsalt);
+      
+      // Redirect to home page after login
+      ctx.redirect('/');
+      
+    } catch (error) {
+      yapi.commons.log(error.message, 'error');
+      ctx.redirect(`/?errorMsg=${encodeURIComponent('OAuth2 login failed: ' + error.message)}`);
     }
   }
 }

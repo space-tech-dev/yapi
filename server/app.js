@@ -60,7 +60,7 @@ app.use(koaStatic(yapi.path.join(yapi.WEBROOT, 'static'), { index: indexFile, gz
 
 const server = app.listen(yapi.WEBCONFIG.port);
 
-server.setTimeout(yapi.WEBCONFIG.timeout);
+server.setTimeout(Number(yapi.WEBCONFIG.timeout));
 
 commons.log(
   `服务已启动，请打开下面链接访问: \nhttp://127.0.0.1${
