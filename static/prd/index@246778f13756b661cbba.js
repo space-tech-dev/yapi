@@ -89402,7 +89402,7 @@ webpackJsonp([0,4],[
 	    var routers = {
 	      interface: { name: '接口', path: '/project/:id/interface/:action', component: _Interface2.default },
 	      activity: { name: '动态', path: '/project/:id/activity', component: _Activity2.default },
-	      data: { name: '数据管理', path: '/project/:id/data', component: _ProjectData2.default },
+	      // data: { name: '数据管理', path: '/project/:id/data', component: ProjectData },
 	      members: { name: '成员管理', path: '/project/:id/members', component: _ProjectMember2.default },
 	      setting: { name: '设置', path: '/project/:id/setting', component: _Setting2.default }
 	    };

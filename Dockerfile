@@ -1,5 +1,5 @@
 # ──────────────── Stage 1: 安装依赖 ────────────────
-FROM node:22-alpine AS deps
+FROM node:18-alpine AS deps
 
 # 安装 pnpm
 # RUN npm install -g yarn
@@ -14,7 +14,7 @@ COPY package.json yarn.lock ./
 RUN yarn install
 
 # ──────────────── Stage 2: 组装运行镜像 ────────────────
-FROM node:22-alpine
+FROM node:18-alpine
 
 # 设置环境变量为 production，关闭调试
 ENV NODE_ENV=production
