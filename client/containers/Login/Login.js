@@ -146,7 +146,7 @@ class Login extends Component {
         </FormItem>
 
         {isKeycloak && (
-          <>
+          <React.Fragment>
             <div className="qsso-breakline">
               <span className="qsso-breakword">或</span>
             </div>
@@ -155,11 +155,10 @@ class Login extends Component {
               type="primary" 
               className="login-form-button" 
               onClick={this.handleKeycloakLogin}
-              ghost
             >
               Keycloak登录
             </Button>
-          </>
+          </React.Fragment>
         )}
       </Form>
     );

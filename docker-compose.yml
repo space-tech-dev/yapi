@@ -35,7 +35,7 @@ services:
       - YAPI_KEYCLOAK_ENABLE=true
       - YAPI_KEYCLOAK_REALM=master
       - YAPI_KEYCLOAK_CLIENT_ID=yapi
-      - YAPI_KEYCLOAK_CLIENT_SECRET=2AVF4Q7PkSqRuT04NBRooMNkVWIksDaG
+      - YAPI_KEYCLOAK_CLIENT_SECRET=xxxx
       - YAPI_KEYCLOAK_REDIRECT_URI=http://100.96.69.119:3000/api/user/oauth2/keycloak/callback
       - YAPI_KEYCLOAK_AUTH_SERVER_URL=https://keycloak.spacecycle.cn
       
